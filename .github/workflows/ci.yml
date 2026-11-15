@@ -1,0 +1,45 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: libsodium (macOS)
+        if: runner.os == 'macOS'
+        run: brew install libsodium pkg-config
+
+      # Ubuntu 24.04 ships libsodium 1.0.18; libopaque needs >= 1.0.19.
+      - name: libsodium (Linux)
+        if: runner.os == 'Linux'
+        env:
+          VERSION: "1.0.20"
+          SHA256: ebb65ef6ca439333c2bb41a0c1990587288da07f6c7fd07cb3a18cc18d30ce19
+        run: |
+          curl -fsSL -o libsodium.tar.gz "https://download.libsodium.org/libsodium/releases/libsodium-$VERSION.tar.gz"
+          echo "$SHA256  libsodium.tar.gz" | sha256sum -c -
+          tar xzf libsodium.tar.gz
+          cd "libsodium-$VERSION" && ./configure --prefix=/usr/local --disable-dependency-tracking
+          make -j"$(nproc)" && sudo make install && sudo ldconfig
+
+      - name: build and test
+        run: make test PYTHON=python

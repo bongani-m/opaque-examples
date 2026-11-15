@@ -1,0 +1,6 @@
+/third_party/
+/build/
+/.venv/
+/rust/target/
+/cpp/compile_commands.json
+__pycache__/
