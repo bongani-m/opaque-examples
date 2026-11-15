@@ -41,5 +41,11 @@ jobs:
           cd "libsodium-$VERSION" && ./configure --prefix=/usr/local --disable-dependency-tracking
           make -j"$(nproc)" && sudo make install && sudo ldconfig
 
+      # libopaque's headers use C99 array-size parameters (uint8_t x[n]); g++ rejects them
+      # in C++, clang++ accepts them as an extension (as on macOS).
+      - name: use clang (Linux)
+        if: runner.os == 'Linux'
+        run: echo "CXX=clang++" >> "$GITHUB_ENV"
+
       - name: build and test
         run: make test PYTHON=python

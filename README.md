@@ -16,6 +16,8 @@ protocol (the server MAC in KE2 doesn't verify on the client), not on a string c
 ## Run
 
 Needs libsodium ≥ 1.0.19, pkg-config, CMake, Python 3.10+ and a Rust toolchain.
+On Linux, build the C++ with clang (`CXX=clang++ make test`): libopaque's headers use C99
+array-size parameters that g++ rejects in C++.
 
 ```sh
 make test
