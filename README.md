@@ -2,7 +2,7 @@
 
 Small, runnable examples of the [OPAQUE](https://www.rfc-editor.org/rfc/rfc9807) augmented PAKE in
 Python, C++ and Rust, written for the post
-[OPAQUE: logging in without ever sending your password](https://bonganimbigi.com/archives/opaque).
+[OPAQUE: logging in without ever sending your password](https://bonganimbigi.com/blog/opaque).
 
 | | Python | C++ | Rust |
 | --- | --- | --- | --- |
